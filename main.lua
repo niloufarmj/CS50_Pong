@@ -1,10 +1,16 @@
+push = require 'push'
+
 WINDOW = {
+    Width = 1000,
     Height = 600,
-    Width = 1000
+    VIRTUAL_WIDTH = 350,
+    VIRTUAL_HEIGHT = 200
 }
 
 function love.load()
-    love.window.setMode(WINDOW.Width, WINDOW.Height, {
+    love.graphics.setDefaultFilter('nearest', 'nearest')
+
+    push:setupScreen(WINDOW.VIRTUAL_WIDTH, WINDOW.VIRTUAL_HEIGHT, WINDOW.Width, WINDOW.Height, {
         fullscreen = false,
         resizable = false,
         vsync = true
@@ -13,17 +19,27 @@ function love.load()
 end
 
 function love.draw()
+    push:apply('start')
+
     love.graphics.printf(
         'My First Game with LOVE2D:',    
-        0,                      -- starting X (0 since we're going to center it based on width)
-        WINDOW.Height / 2 - 20,  -- starting Y (halfway down the screen)
-        WINDOW.Width,           -- number of pixels to center within (the entire screen here)
+        0,                     
+        WINDOW.VIRTUAL_HEIGHT / 2 - 20,  
+        WINDOW.VIRTUAL_WIDTH,       
         'center') 
         
     love.graphics.printf(
         'PONG',    
-        0,                      -- starting X (0 since we're going to center it based on width)
-        WINDOW.Height / 2 + 10,  -- starting Y (halfway down the screen)
-        WINDOW.Width,           -- number of pixels to center within (the entire screen here)
+        0,                    
+        WINDOW.VIRTUAL_HEIGHT / 2 + 10,  
+        WINDOW.VIRTUAL_WIDTH,           
         'center') 
+
+    push:apply('end')
+end
+
+function love.keypressed(key)
+    if key == 'escape' then
+        love.event.quit()
+    end
 end
