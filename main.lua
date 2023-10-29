@@ -3,7 +3,6 @@ push = require 'push'
 require 'Player'
 require 'Ball'
 
--- window section
 
 WINDOW = {
     Width = 1000,
@@ -12,15 +11,11 @@ WINDOW = {
     VirtualHeight = 200
 }
 
--- game state section
-
 GameState = {
     PLAY = 1,
     START = 2,
 }
 
-
--- init screen
 
 function initValues() 
     player1 = Player:new(15, 79)
@@ -30,8 +25,11 @@ function initValues()
     currentState = GameState.START 
 end
 
+
 function love.load()
     -- love.graphics.setDefaultFilter('nearest', 'nearest')
+    love.window.setTitle('Pong')
+
     math.randomseed(os.time())
 
     smallFont = love.graphics.newFont('font.ttf', 10)
@@ -46,8 +44,6 @@ function love.load()
     initValues()
 end
 
-
--- update
 
 function love.update(dt) 
     
@@ -77,7 +73,7 @@ function love.update(dt)
     end
 end
 
--- draw
+
 
 function drawUI()
     love.graphics.clear(35/255, 5/255, 65/255, 255/255)
@@ -107,6 +103,10 @@ function drawUI()
         'center') 
 end
 
+function drawFPS()
+    love.graphics.setColor(0, 255/255, 0, 255/255)
+    love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
+end
 
 function love.draw()
     push:apply('start')
@@ -116,6 +116,7 @@ function love.draw()
     player1:draw() -- left paddle
     player2:draw() -- right paddle
     ball:draw() -- ball
+    drawFPS()
 
     push:apply('end')
 end
