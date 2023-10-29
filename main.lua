@@ -1,5 +1,7 @@
 push = require 'push'
 
+require 'Player'
+require 'Ball'
 
 -- window section
 
@@ -9,58 +11,6 @@ WINDOW = {
     VirtualWidth = 350,
     VirtualHeight = 200
 }
-
--- paddle section
-
-PADDLE = {
-    Width = 6,
-    Height = 25, 
-    Speed = 150,
-}
-
--- ball section
-
-BALL = {
-    x = WINDOW.VirtualWidth / 2 - 2.5,
-    y = WINDOW.VirtualHeight / 2 + 27.5,
-    dx = math.random(2) == 1 and 100 or -100,
-    dy = math.random(-50, 50),
-    Diameter = 5
-}
-
-function initBall()
-    BALL = {
-        x = WINDOW.VirtualWidth / 2 - 2.5,
-        y = WINDOW.VirtualHeight / 2 + 27.5,
-        dx = math.random(2) == 1 and 100 or -100,
-        dy = math.random(-50, 50),
-        Diameter = 5
-    }
-end
-
--- player section
-
-Player = {}
-
-function Player:new(x, y)
-    local obj = {
-        x = x,
-        y = y,
-        score = 0,
-    }
-    setmetatable(obj, self)
-    self.__index = self
-    return obj
-end
-
-function Player:update(dt)
-    -- Your update code here
-end
-
-function Player:draw()
-    -- Your drawing code here
-end
-
 
 -- game state section
 
@@ -75,13 +25,14 @@ GameState = {
 function initValues() 
     player1 = Player:new(15, 79)
     player2 = Player:new(WINDOW.VirtualWidth - 20, WINDOW.VirtualHeight - 50)
-    initBall()
+    ball = Ball:new(WINDOW.VirtualWidth / 2 - 2.5, WINDOW.VirtualHeight / 2 + 27.5, 5)
 
     currentState = GameState.START 
 end
 
 function love.load()
     -- love.graphics.setDefaultFilter('nearest', 'nearest')
+    math.randomseed(os.time())
 
     smallFont = love.graphics.newFont('font.ttf', 10)
     love.graphics.setFont(smallFont)
@@ -99,24 +50,30 @@ end
 -- update
 
 function love.update(dt) 
-    -- player 1 movement
+    
     if currentState == GameState.PLAY then
+        -- player 1 movement
         if love.keyboard.isDown('w') then
-            player1.y = player1.y + -PADDLE.Speed * dt
+            player1.dy = -1
         elseif love.keyboard.isDown('s') then
-            player1.y = player1.y + PADDLE.Speed * dt
+            player1.dy = 1
+        else
+            player1.dy = 0
         end
+        player1:update(dt)
 
         -- player 2 movement
         if love.keyboard.isDown('up') then
-            player2.y = player2.y + -PADDLE.Speed * dt
+            player2.dy = -1
         elseif love.keyboard.isDown('down') then
-            player2.y = player2.y + PADDLE.Speed * dt
+            player2.dy = 1
+        else
+            player2.dy = 0
         end
+        player2:update(dt)
 
         -- ball movement
-        BALL.x = BALL.x + BALL.dx * dt
-        BALL.y = BALL.y + BALL.dy * dt
+        ball:update(dt)
     end
 end
 
@@ -156,9 +113,9 @@ function love.draw()
 
     drawUI()
 
-    love.graphics.rectangle('fill', player1.x, player1.y, PADDLE.Width, PADDLE.Height) -- left paddle
-    love.graphics.rectangle('fill', player2.x, player2.y, PADDLE.Width, PADDLE.Height) -- right paddle
-    love.graphics.circle("fill", BALL.x, BALL.y, BALL.Diameter) -- ball
+    player1:draw() -- left paddle
+    player2:draw() -- right paddle
+    ball:draw() -- ball
 
     push:apply('end')
 end
