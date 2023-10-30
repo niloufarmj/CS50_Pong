@@ -56,11 +56,15 @@ function love.load()
     
     push:setupScreen(WINDOW.VirtualWidth, WINDOW.VirtualHeight, WINDOW.Width, WINDOW.Height, {
         fullscreen = false,
-        resizable = false,
+        resizable = true,
         vsync = true
     })
 
     initValues()
+end
+
+function love.resize(w, h)
+    push:resize(w, h)
 end
 
 
@@ -138,7 +142,7 @@ function love.update(dt)
         if ball.x < 0 then
             player2.score = player2.score + 1
             sounds['score']:play()
-            
+
             if player2.score == winningScore then
                 winningPlayer = 'player2'
                 currentState = GameState.END
