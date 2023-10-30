@@ -14,7 +14,11 @@ WINDOW = {
 GameState = {
     PLAY = 1,
     START = 2,
+    END = 3
 }
+
+winningPlayer = ''
+winningScore = 3
 
 
 function initValues() 
@@ -42,7 +46,8 @@ function love.load()
     math.randomseed(os.time())
 
     smallFont = love.graphics.newFont('font.ttf', 10)
-    love.graphics.setFont(smallFont)
+    largeFont = love.graphics.newFont('font.ttf', 25)
+    
 
     push:setupScreen(WINDOW.VirtualWidth, WINDOW.VirtualHeight, WINDOW.Width, WINDOW.Height, {
         fullscreen = false,
@@ -112,13 +117,28 @@ function love.update(dt)
         if ball.x > WINDOW.VirtualWidth then
             player1.score = player1.score + 1
             currentState = GameState.START
-            reset()
+
+            if player1.score == winningScore then
+                winningPlayer = 'player1'
+                currentState = GameState.END
+            else
+                currentState = GameState.START
+                reset()
+            end
         end
         if ball.x < 0 then
             player2.score = player2.score + 1
-            currentState = GameState.START
-            reset()
+            
+            if player2.score == winningScore then
+                winningPlayer = 'player2'
+                currentState = GameState.END
+            else
+                currentState = GameState.START
+                reset()
+            end
         end
+
+        
         ball:update(dt)
     end
 end
@@ -126,6 +146,7 @@ end
 
 
 function drawUI()
+    love.graphics.setFont(smallFont)
     love.graphics.clear(35/255, 5/255, 65/255, 255/255)
 
     love.graphics.printf(
@@ -154,8 +175,26 @@ function drawUI()
 end
 
 function drawFPS()
+    love.graphics.setFont(smallFont)
     love.graphics.setColor(0, 255/255, 0, 255/255)
     love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
+end
+
+function drawResult()
+    love.graphics.setColor(255/255, 76/255, 132/255, 0.8)
+    love.graphics.setFont(largeFont)
+    love.graphics.printf(
+        tostring(winningPlayer) .. ' WINS!',    
+        0,                     
+        70,  
+        WINDOW.VirtualWidth,       
+        'center') 
+    love.graphics.printf(
+        ' Press Enter to Restart',    
+        0,                     
+        120,  
+        WINDOW.VirtualWidth,       
+        'center') 
 end
 
 function love.draw()
@@ -163,9 +202,14 @@ function love.draw()
 
     drawUI()
 
-    player1:draw() -- left paddle
-    player2:draw() -- right paddle
-    ball:draw() -- ball
+    if currentState == GameState.END then
+        drawResult()
+    else 
+        player1:draw() -- left paddle
+        player2:draw() -- right paddle
+        ball:draw() -- ball
+    end
+
     drawFPS()
 
     push:apply('end')
@@ -178,6 +222,8 @@ function love.keypressed(key)
     elseif key == 'return' then
         if currentState == GameState.START then
             currentState = GameState.PLAY
+        elseif currentState == GameState.END then
+            initValues()
         else
             reset()
         end
