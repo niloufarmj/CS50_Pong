@@ -8,6 +8,7 @@ this is step by step video of my development in game implimentation
 
 
 1> init pong game window and draw text
+![1]([URL](https://github.com/niloufarmj/CS50_Pong/blob/main/Process/1.png))
 
 2> add push library for resolution + add default filter (not bluring)
 
