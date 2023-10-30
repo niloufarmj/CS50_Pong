@@ -25,6 +25,15 @@ function initValues()
     currentState = GameState.START 
 end
 
+function reset() 
+    player1.x = 15
+    player1.y = 79
+    player2.x = WINDOW.VirtualWidth - 20
+    player2.y = WINDOW.VirtualHeight - 50
+    ball:reset()
+    currentState = GameState.START 
+end
+
 
 function love.load()
     -- love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -100,8 +109,16 @@ function love.update(dt)
             ball.dy = -math.random(50, 130)
         end
 
-        
-
+        if ball.x > WINDOW.VirtualWidth then
+            player1.score = player1.score + 1
+            currentState = GameState.START
+            reset()
+        end
+        if ball.x < 0 then
+            player2.score = player2.score + 1
+            currentState = GameState.START
+            reset()
+        end
         ball:update(dt)
     end
 end
@@ -162,7 +179,7 @@ function love.keypressed(key)
         if currentState == GameState.START then
             currentState = GameState.PLAY
         else
-            initValues()
+            reset()
         end
     end
 end
