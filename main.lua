@@ -72,19 +72,20 @@ function love.update(dt)
     
     if currentState == GameState.PLAY then
         -- player 1 movement
-        if love.keyboard.isDown('w') and player1.y > 60 then
+        if love.keyboard.isDown('up') and player1.y > 60 then
             player1.dy = -1
-        elseif love.keyboard.isDown('s') and player1.y < WINDOW.VirtualHeight - 30 then
+        elseif love.keyboard.isDown('down') and player1.y < WINDOW.VirtualHeight - 30 then
             player1.dy = 1
         else
             player1.dy = 0
         end
         player1:update(dt)
 
-        -- player 2 movement
-        if love.keyboard.isDown('up') and player2.y > 60 then
+        -- player 2 movement (AI)
+        local targetY = ball.y - PADDLE.Height / 2
+        if targetY < player2.y then
             player2.dy = -1
-        elseif love.keyboard.isDown('down') and player2.y < WINDOW.VirtualHeight - 30 then
+        elseif targetY > player2.y then
             player2.dy = 1
         else
             player2.dy = 0
