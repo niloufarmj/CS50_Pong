@@ -47,8 +47,13 @@ function love.load()
 
     smallFont = love.graphics.newFont('font.ttf', 10)
     largeFont = love.graphics.newFont('font.ttf', 25)
-    
 
+    sounds = {
+        ['paddle_hit'] = love.audio.newSource('sounds/paddle_hit.wav', 'static'),
+        ['score'] = love.audio.newSource('sounds/score.wav', 'static'),
+        ['wall_hit'] = love.audio.newSource('sounds/wall_hit.wav', 'static')
+    }
+    
     push:setupScreen(WINDOW.VirtualWidth, WINDOW.VirtualHeight, WINDOW.Width, WINDOW.Height, {
         fullscreen = false,
         resizable = false,
@@ -86,6 +91,7 @@ function love.update(dt)
         if ball:collides(player1) then
             ball.dx = -ball.dx * 1.03
             ball.x = player1.x + PADDLE.Width + ball.radius
+            sounds['paddle_hit']:play()
 
             -- keep velocity going in the same direction, but randomize it
             if ball.dy < 0 then
@@ -98,6 +104,7 @@ function love.update(dt)
         if ball:collides(player2) then
             ball.dx = -ball.dx * 1.03
             ball.x = player2.x - PADDLE.Width
+            sounds['paddle_hit']:play()
 
             -- keep velocity going in the same direction, but randomize it
             if ball.dy < 0 then
@@ -109,14 +116,16 @@ function love.update(dt)
 
         if ball.y - ball.radius <= 57 then
             ball.dy = math.random(50, 130)
+            sounds['wall_hit']:play()
         end
         if ball.y + ball.radius > WINDOW.VirtualHeight - 5 then
             ball.dy = -math.random(50, 130)
+            sounds['wall_hit']:play()
         end
 
         if ball.x > WINDOW.VirtualWidth then
             player1.score = player1.score + 1
-            currentState = GameState.START
+            sounds['score']:play()
 
             if player1.score == winningScore then
                 winningPlayer = 'player1'
@@ -128,6 +137,7 @@ function love.update(dt)
         end
         if ball.x < 0 then
             player2.score = player2.score + 1
+            sounds['score']:play()
             
             if player2.score == winningScore then
                 winningPlayer = 'player2'
