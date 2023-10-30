@@ -8,7 +8,7 @@ WINDOW = {
     Width = 1000,
     Height = 600,
     VirtualWidth = 350,
-    VirtualHeight = 200
+    VirtualHeight = 210
 }
 
 GameState = {
@@ -49,9 +49,9 @@ function love.update(dt)
     
     if currentState == GameState.PLAY then
         -- player 1 movement
-        if love.keyboard.isDown('w') then
+        if love.keyboard.isDown('w') and player1.y > 60 then
             player1.dy = -1
-        elseif love.keyboard.isDown('s') then
+        elseif love.keyboard.isDown('s') and player1.y < WINDOW.VirtualHeight - 30 then
             player1.dy = 1
         else
             player1.dy = 0
@@ -59,9 +59,9 @@ function love.update(dt)
         player1:update(dt)
 
         -- player 2 movement
-        if love.keyboard.isDown('up') then
+        if love.keyboard.isDown('up') and player2.y > 60 then
             player2.dy = -1
-        elseif love.keyboard.isDown('down') then
+        elseif love.keyboard.isDown('down') and player2.y < WINDOW.VirtualHeight - 30 then
             player2.dy = 1
         else
             player2.dy = 0
@@ -69,6 +69,39 @@ function love.update(dt)
         player2:update(dt)
 
         -- ball movement
+        if ball:collides(player1) then
+            ball.dx = -ball.dx * 1.03
+            ball.x = player1.x + PADDLE.Width + ball.radius
+
+            -- keep velocity going in the same direction, but randomize it
+            if ball.dy < 0 then
+                ball.dy = -math.random(50, 130)
+            else
+                ball.dy = math.random(50, 130)
+            end
+        end
+
+        if ball:collides(player2) then
+            ball.dx = -ball.dx * 1.03
+            ball.x = player2.x - PADDLE.Width
+
+            -- keep velocity going in the same direction, but randomize it
+            if ball.dy < 0 then
+                ball.dy = -math.random(50, 130)
+            else
+                ball.dy = math.random(50, 130)
+            end
+        end
+
+        if ball.y - ball.radius <= 57 then
+            ball.dy = math.random(50, 130)
+        end
+        if ball.y + ball.radius > WINDOW.VirtualHeight - 5 then
+            ball.dy = -math.random(50, 130)
+        end
+
+        
+
         ball:update(dt)
     end
 end
