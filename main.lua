@@ -82,11 +82,16 @@ function love.update(dt)
         player1:update(dt)
 
         -- player 2 movement (AI)
-        local targetY = ball.y - PADDLE.Height / 2
-        if targetY < player2.y then
-            player2.dy = -1
-        elseif targetY > player2.y then
-            player2.dy = 1
+        if ball.dx > 0 and ball.x > WINDOW.VirtualWidth / 2 then
+            local targetY = ball.y - PADDLE.Height / 2
+
+            if targetY < player2.y then
+                player2.dy = -1
+            elseif targetY > player2.y then
+                player2.dy = 1
+            else
+                player2.dy = 0
+            end
         else
             player2.dy = 0
         end
@@ -94,11 +99,11 @@ function love.update(dt)
 
         -- ball movement
         if ball:collides(player1) then
-            ball.dx = -ball.dx * 1.03
-            ball.x = player1.x + PADDLE.Width + ball.radius
+            ball.dx = math.abs(ball.dx) -- Invert the horizontal velocity
+            ball.x = player1.x + PADDLE.Width + ball.radius -- Move the ball outside the paddle
             sounds['paddle_hit']:play()
-
-            -- keep velocity going in the same direction, but randomize it
+        
+            -- Randomize the vertical velocity
             if ball.dy < 0 then
                 ball.dy = -math.random(50, 130)
             else
@@ -107,11 +112,11 @@ function love.update(dt)
         end
 
         if ball:collides(player2) then
-            ball.dx = -ball.dx * 1.03
-            ball.x = player2.x - PADDLE.Width
+            ball.dx = -math.abs(ball.dx) -- Invert the horizontal velocity
+            ball.x = player2.x - ball.radius -- Move the ball outside the paddle
             sounds['paddle_hit']:play()
-
-            -- keep velocity going in the same direction, but randomize it
+        
+            -- Randomize the vertical velocity
             if ball.dy < 0 then
                 ball.dy = -math.random(50, 130)
             else
@@ -120,11 +125,10 @@ function love.update(dt)
         end
 
         if ball.y - ball.radius <= 57 then
-            ball.dy = math.random(50, 130)
-            sounds['wall_hit']:play()
+            ball.dy = math.abs(ball.dy) -- Invert the vertical velocity
         end
         if ball.y + ball.radius > WINDOW.VirtualHeight - 5 then
-            ball.dy = -math.random(50, 130)
+            ball.dy = -math.abs(ball.dy) -- Invert the vertical velocity
             sounds['wall_hit']:play()
         end
 

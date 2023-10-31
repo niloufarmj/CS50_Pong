@@ -30,12 +30,13 @@ function Ball:draw()
 end
 
 function Ball:collides(player)
-    if self.x > player.x + PADDLE.Width or player.x > self.x + self.radius then
+    if self.x - self.radius > player.x + PADDLE.Width or player.x > self.x + self.radius then
         return false
     end
 
-    if self.y > player.y + PADDLE.Height or player.y > self.y + self.radius then
+    if self.y - self.radius > player.y + PADDLE.Height or player.y > self.y + self.radius then
         return false
     end 
+
     return true
 end
