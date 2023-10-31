@@ -72,9 +72,9 @@ function love.update(dt)
     
     if currentState == GameState.PLAY then
         -- player 1 movement
-        if love.keyboard.isDown('up') and player1.y > 60 then
+        if (love.keyboard.isDown('up') or love.keyboard.isDown('w')) and player1.y > 60 then
             player1.dy = -1
-        elseif love.keyboard.isDown('down') and player1.y < WINDOW.VirtualHeight - 30 then
+        elseif (love.keyboard.isDown('down') or love.keyboard.isDown('s')) and player1.y < WINDOW.VirtualHeight - 30 then
             player1.dy = 1
         else
             player1.dy = 0
@@ -126,6 +126,7 @@ function love.update(dt)
 
         if ball.y - ball.radius <= 57 then
             ball.dy = math.abs(ball.dy) -- Invert the vertical velocity
+            sounds['wall_hit']:play()
         end
         if ball.y + ball.radius > WINDOW.VirtualHeight - 5 then
             ball.dy = -math.abs(ball.dy) -- Invert the vertical velocity
