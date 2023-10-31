@@ -72,6 +72,14 @@ https://github.com/niloufarmj/CS50_Pong/assets/46811379/cba11f8f-3615-45fb-afdb-
 
 https://github.com/niloufarmj/CS50_Pong/assets/46811379/a2f0633e-7c27-44fa-89b9-e20475a6b46b
 
+## step 13
+ add AI for the right paddle + fix some minor errors
+ 
+
+https://github.com/niloufarmj/CS50_Pong/assets/46811379/79a211c5-9807-46b9-b4ee-6fc8da1d0f67
+
+
+
 
 
 
